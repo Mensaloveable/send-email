@@ -37,6 +37,8 @@ logs
 /logs/
 /.mvn
 .mvn
+mvnw
+mvnw.cmd
 
 src/main/resources/application-dev.properties
 
