@@ -96,6 +96,19 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- Jakarta Bean Validation -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+        <!-- Hibernate Validator (implementation of the Jakarta Validation API) -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>7.0.2.Final</version>
+        </dependency>
     </dependencies>
 
     <build>
