@@ -36,6 +36,7 @@ build/
 logs
 /logs/
 /.mvn
+.mvn
 
 src/main/resources/application-dev.properties
 
