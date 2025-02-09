@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,10 +53,11 @@ public class AuthService {
             );
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 
-            log.info("\n\nUser logged in: {}\n\n", userDetails.isEnabled());
+            User inUser = userRepository.findByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             // Check if the user is enabled
-            if (!userDetails.isEnabled()) {
+            if (!inUser.isEnabled()) {
                 response.put("status", "error");
                 response.put("message", "Your account is not activated. Please check your email to activate your account.");
                 return ResponseEntity.status(403).body(response); // Forbidden status

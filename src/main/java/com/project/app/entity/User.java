@@ -113,7 +113,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        System.out.println("Checking if user is enabled: " + this.isEnabled);  // Debugging
         return this.isEnabled != null && this.isEnabled;
     }
 }
