@@ -1,6 +1,7 @@
 package com.project.app.service;
 
-import com.project.app.Role;
+import com.project.app.enums.AuditAction;
+import com.project.app.enums.Role;
 import com.project.app.config.ApiKeyUtil;
 import com.project.app.entity.User;
 import com.project.app.repository.UserRepository;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final AuditLogService auditLogService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -55,6 +57,8 @@ public class UserService implements UserDetailsService {
             String apiKey = ApiKeyUtil.generateApiKey();
             user.setApiKey(apiKey);
             userRepository.save(user);
+
+            auditLogService.log(AuditAction.GENERATE_API_KEY.getAction(), "User", user.getId(), "API key generated");
 
             response.put("status", "success");
             response.put("message", "API key generated successfully");

@@ -1,7 +1,7 @@
 package com.project.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.project.app.Role;
+import com.project.app.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +34,16 @@ public class User {
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Please provide a valid email address")
     private String email;
+
+    @Column(nullable = false)
+    @NotBlank(message = "First name is mandatory")
+    @Size(min = 2, message = "First name must be at least 3 characters long")
+    private String firstName;
+
+    @Column(nullable = false)
+    @NotBlank(message = "Last name is mandatory")
+    @Size(min = 2, message = "Last name must be at least 3 characters long")
+    private String lastName;
 
     @Column(unique = true)
     private String apiKey;

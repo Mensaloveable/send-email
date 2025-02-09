@@ -1,4 +1,4 @@
-package com.project.app;
+package com.project.app.enums;
 
 public enum Role {
     USER,
