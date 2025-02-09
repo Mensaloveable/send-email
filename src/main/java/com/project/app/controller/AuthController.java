@@ -2,6 +2,7 @@ package com.project.app.controller;
 
 import com.project.app.entity.User;
 import com.project.app.service.AuthService;
+import com.project.app.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +33,5 @@ public class AuthController {
         User registeredUser = authService.registerUser(user);
         return ResponseEntity.ok().body(registeredUser);
     }
+
 }

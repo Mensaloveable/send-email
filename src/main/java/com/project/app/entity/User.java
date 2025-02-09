@@ -1,6 +1,7 @@
 package com.project.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.project.app.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -38,9 +39,13 @@ public class User {
     private String apiKey;
 
     @NotBlank(message = "Password is mandatory")
-    @Min(value = 8, message = "Password must be at least 8 characters long")
+    @Min(value = 6, message = "Password must be at least 8 characters long")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(unique = true)
     private String token;
 
     @Column(nullable = false, updatable = false)

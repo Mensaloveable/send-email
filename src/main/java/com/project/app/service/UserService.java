@@ -1,5 +1,6 @@
 package com.project.app.service;
 
+import com.project.app.config.ApiKeyUtil;
 import com.project.app.entity.User;
 import com.project.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,28 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    public String generateApiKey(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        String apiKey = ApiKeyUtil.generateApiKey();
+        user.setApiKey(apiKey);
+        userRepository.save(user);
+        return apiKey;
+    }
+
+    public void revokeApiKey(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setApiKey(null);
+        userRepository.save(user);
+    }
+
+    public User getUserByApiKey(String apiKey) {
+        return userRepository.findByApiKey(apiKey)
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid API key"));
     }
 }
