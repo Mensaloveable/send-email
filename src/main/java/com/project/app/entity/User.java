@@ -113,6 +113,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.isEnabled;
+        return this.isEnabled != null && this.isEnabled;
     }
 }
