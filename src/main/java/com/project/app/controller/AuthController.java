@@ -31,4 +31,10 @@ public class AuthController {
         return authService.registerUser(user);
     }
 
+    @PutMapping("/activate-account/{token}")
+    public ResponseEntity<Map<String, String>> activateAccount(@PathVariable String token) {
+
+        return authService.activateAccount(token);
+    }
+
 }
