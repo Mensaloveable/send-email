@@ -83,6 +83,8 @@ public class UserService implements UserDetailsService {
             user.setApiKey(null);
             userRepository.save(user);
 
+            auditLogService.log(AuditAction.REVOKE_API_KEY.getAction(), "User", user.getId(), "API key revoked");
+
             response.put("status", "success");
             response.put("message", "API key revoked successfully");
             return ResponseEntity.ok(response);

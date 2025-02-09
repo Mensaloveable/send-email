@@ -2,6 +2,7 @@ package com.project.app.service;
 
 import com.project.app.config.JwtUtil;
 import com.project.app.entity.User;
+import com.project.app.enums.AuditAction;
 import com.project.app.exception.InvalidEmailException;
 import com.project.app.exception.InvalidPasswordException;
 import com.project.app.exception.UserAlreadyExistsException;
@@ -22,11 +23,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
+    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
     public ResponseEntity<Map<String, Object>> login(User user) {
 
@@ -38,6 +40,8 @@ public class AuthService {
             );
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
             String jwt = jwtUtil.generateToken(userDetails);
+
+            auditLogService.log(AuditAction.LOGIN.getAction(), "User", user.getId(), "User logged in successfully");
 
             response.put("status", "success");
             response.put("message", "User logged in successfully");
@@ -52,6 +56,12 @@ public class AuthService {
     }
 
     public void logout(String username) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        auditLogService.log(AuditAction.LOGOUT.getAction(), "User", user.getId(), "User logged out successfully");
+
         jwtUtil.invalidateToken(username);
     }
 
@@ -80,6 +90,8 @@ public class AuthService {
                 throw new InvalidPasswordException("Password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character");
             }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            auditLogService.log(AuditAction.REGISTER.getAction(), "User", user.getId(), "User registered successfully");
 
             response.put("status", "success");
             response.put("message", "User registered successfully");
