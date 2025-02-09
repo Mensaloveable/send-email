@@ -21,13 +21,10 @@ public class EmailRequest {
     @NotBlank
     @Email
     private String to;
-    @Email
-    private String from;
     @NotBlank
     private String subject;
     @NotBlank
     private String body;
-    private Boolean isHtml;
     private List<File> attachments;  // For emails with attachments
     private String sendAt; // For scheduled emails (ISO_LOCAL_DATE_TIME format)
     @NotNull

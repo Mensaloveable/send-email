@@ -25,7 +25,7 @@ public class EmailController {
             }
 
             // Process email request
-            emailService.processEmailRequest(emailRequest);
+            emailService.processEmailRequest(emailRequest, apiKey);
 
             return ResponseEntity.ok(Map.of("status", "success", "message", "Email request processed successfully"));
         } catch (Exception e) {

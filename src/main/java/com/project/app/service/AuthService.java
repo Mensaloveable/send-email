@@ -133,20 +133,35 @@ public class AuthService {
             userRepository.save(user);
 
             // Send activation email
+            String activationLink = baseUrl + "/auth/activate-account/" + activationToken;
+            String buttonLink = "<a href='" + activationLink + "' style='display:inline-block;background-color:#007BFF;color:white;padding:14px 30px;text-align:center;text-decoration:none;font-size:16px;border-radius:50%;'>Activate Your Account</a>";
+
+            String htmlBody = "<html><body>"
+                    + "<h3>Hello " + user.getFirstName() + ",</h3>"
+                    + "<p>Click the button below to activate your account:</p>"
+                    + "<div style='text-align:center;'>"
+                    + buttonLink
+                    + "</div>"
+                    + "<p>If you did not request this, please ignore this email.</p>"
+                    + "<p>Thank you, <br/> Your Company Name</p>"
+                    + "</body></html>";
             EmailRequest emailRequest = EmailRequest.builder()
                     .to(user.getEmail())
                     .subject("Activate your account")
-                    .from("no-reply@sendemailservice")
-                    .body("Click the link below to activate your account: " + baseUrl + "/auth/activate-account/" + activationToken)
-                    .isHtml(false)
+                    .body(htmlBody)
                     .build();
-            emailService.sendPlainEmail(emailRequest);
+
+            userRepository.save(user);
+
+            User system = User.builder()
+                    .email("no-reply@sendemailservice")
+                    .build();
+            emailService.sendHtmlEmail(emailRequest, system);
 
             auditLogService.log(AuditAction.REGISTER.getAction(), "User", user.getId(), "User registered successfully");
 
             response.put("status", "success");
-            response.put("message", "User registered successfully");
-            response.put("user", userRepository.save(user));
+            response.put("message", "User registered successfully, Please check your email to activate your account");
             return ResponseEntity.ok(response);
 
         } catch (UserAlreadyExistsException | InvalidEmailException | InvalidPasswordException e) {
