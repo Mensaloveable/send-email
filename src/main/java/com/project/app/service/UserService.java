@@ -8,8 +8,10 @@ import com.project.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,13 +49,21 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public ResponseEntity<Map<String, Object>> generateApiKey(String username) {
+    public ResponseEntity<Map<String, Object>> generateApiKey() {
 
         Map<String, Object> response = new HashMap<>();
 
         try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            log.info("Generating API key for user: {}", username);
+
+            // Find the user by username
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
             String apiKey = ApiKeyUtil.generateApiKey();
             user.setApiKey(apiKey);
             userRepository.save(user);
@@ -73,13 +83,20 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<Map<String, Object>> revokeApiKey(String username) {
+    public ResponseEntity<Map<String, Object>> revokeApiKey() {
 
         Map<String, Object> response = new HashMap<>();
 
         try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            log.info("Revoking API key for user: {}", username);
+
             user.setApiKey(null);
             userRepository.save(user);
 

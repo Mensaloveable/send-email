@@ -21,8 +21,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestParam String username) {
-        authService.logout(username);
+    public ResponseEntity<?> logout() {
+        authService.logout();
         return ResponseEntity.ok().body("Logged out successfully");
     }
 
