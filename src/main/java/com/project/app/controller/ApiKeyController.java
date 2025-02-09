@@ -17,13 +17,11 @@ public class ApiKeyController {
 
     @PostMapping("/generate-api-key")
     public ResponseEntity<?> generateApiKey(@RequestParam String username) {
-        String apiKey = userService.generateApiKey(username); // Generate an API key
-        return ResponseEntity.ok().body(apiKey); // Return the API key
+        return userService.generateApiKey(username);
     }
 
     @PostMapping("/revoke-api-key")
     public ResponseEntity<?> revokeApiKey(@RequestParam String username) {
-        userService.revokeApiKey(username); // Revoke the API key
-        return ResponseEntity.ok().body("API key revoked successfully");
+        return userService.revokeApiKey(username);
     }
 }
