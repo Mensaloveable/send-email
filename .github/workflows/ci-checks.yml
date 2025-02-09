@@ -1,35 +1,43 @@
 name: Feature Branch CI Checks
+
 on:
   push:
     branches:
-      - "feature/*"
+      - "feature/*"  # Run checks only on feature branches
+
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses:
-          actions/setup-java@v3 with:
-            distribution: 'temurin'
-            java-version: '17'
-            cache: 'maven'
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'  # Use 'gradle' if using Gradle
+
       - name: Build and Test (Maven)
-        run:
-          mvn clean install -DskipTests=false if: success()  # Continue only if previous steps succeed
+        run: mvn clean install -DskipTests=false
+        if: success()  # Continue only if previous steps succeed
+
       - name: Run Lint Checks (Checkstyle)
-        run: mvn checkstyle:check || true # Set up Checkstyle
+        run: mvn checkstyle:check || true  # Set up Checkstyle
+
       - name: Run Tests
         run: mvn test
+
       - name: Upload Test Reports
-        if:
-          always() uses:
-            actions/upload-artifact@v4 with:
-            name:
-              test-reports path: target/surefire-reports/
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: target/surefire-reports/
+
       - name: Notify on Failure
-        if:
-          failure() run: echo "Tests failed! Check logs for details."
+        if: failure()
+        run: echo "Tests failed! Check logs for details."
