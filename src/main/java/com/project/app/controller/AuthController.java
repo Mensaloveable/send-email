@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -14,11 +16,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid User user) {
-        String username = user.getUsername();
-        String password = user.getPassword();
-        String jwt = authService.login(username, password);
-        return ResponseEntity.ok().body(jwt); // Return the JWT
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+        return authService.login(user);
     }
 
     @PostMapping("/logout")
@@ -28,9 +27,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody @Valid User user) {
-        User registeredUser = authService.registerUser(user);
-        return ResponseEntity.ok().body(registeredUser);
+    public ResponseEntity<Map<String, Object>> signup(@RequestBody @Valid User user) {
+        return authService.registerUser(user);
     }
 
 }
