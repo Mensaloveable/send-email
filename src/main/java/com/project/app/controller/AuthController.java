@@ -15,7 +15,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody @Valid User user) {
         String username = user.getUsername();
         String password = user.getPassword();
         String jwt = authService.login(username, password);
